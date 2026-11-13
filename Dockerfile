@@ -45,6 +45,12 @@ RUN /opt/venv/bin/python -m pip install --no-cache-dir nvidia-vfx \
 # ---------------------------------------------------------------
 COPY custom_nodes/ComfyUI-PhotoTexture /comfyui/custom_nodes/ComfyUI-PhotoTexture
 
+# ---------------------------------------------------------------
+# 5) Smoke-test input image baked into ComfyUI's input dir so the
+#    test workflow's LoadImage finds it with zero upload.
+# ---------------------------------------------------------------
+COPY test_input.png /comfyui/input/test_input.png
+
 # No model downloads here: the network volume is mounted at
 # /runpod-volume and the worker maps /runpod-volume/models/* into
 # ComfyUI at startup (qwen-image-2.1-UC-Q6_K.gguf, qwen3vl_8b_int8_convrot,

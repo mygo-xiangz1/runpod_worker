@@ -21,12 +21,19 @@ RUN cd /comfyui \
          --index-strategy unsafe-best-match --prerelease=if-necessary-or-explicit
 
 # ---------------------------------------------------------------
-# 2) Custom nodes from the Comfy registry:
-#    - comfyui-gguf              -> UnetLoaderGGUF (Q6_K unet)
+# 2) Custom nodes:
 #    - comfyui_nvidia_rtx_nodes  -> RTXVideoSuperResolution (2x ULTRA)
 #      (Comfy-Org official; pulls the `nvidia-vfx` pip package)
+#    - UnetLoaderGGUF: the registry slug `comfyui-gguf` installs a
+#      different package that does NOT provide this class, so vendor
+#      city96/ComfyUI-GGUF from source instead (same copy as local).
 # ---------------------------------------------------------------
-RUN comfy-node-install comfyui-gguf comfyui_nvidia_rtx_nodes
+RUN comfy-node-install comfyui_nvidia_rtx_nodes
+RUN /opt/venv/bin/python -m pip install --no-cache-dir 'gguf>=0.13.0' sentencepiece protobuf \
+    && ( [ -x /comfyui/.venv/bin/python ] \
+         && /comfyui/.venv/bin/python -m pip install --no-cache-dir 'gguf>=0.13.0' sentencepiece protobuf \
+         || true )
+COPY custom_nodes/ComfyUI-GGUF /comfyui/custom_nodes/ComfyUI-GGUF
 
 # ---------------------------------------------------------------
 # 3) Belt & braces: start.sh launches ComfyUI with /opt/venv python,

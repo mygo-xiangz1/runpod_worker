@@ -58,6 +58,16 @@ COPY custom_nodes/ComfyUI-PhotoTexture /comfyui/custom_nodes/ComfyUI-PhotoTextur
 # ---------------------------------------------------------------
 COPY test_input.png /comfyui/input/test_input.png
 
+# ---------------------------------------------------------------
+# 6) Model path map: overwrite the image's stock
+#    /comfyui/extra_model_paths.yaml. The stock file only maps the
+#    legacy categories (checkpoints/clip/loras/vae/unet...); our
+#    volume layout uses the modern ComfyUI folders
+#    (diffusion_models, text_encoders), which the stock file misses,
+#    leaving every loader list empty inside the worker.
+# ---------------------------------------------------------------
+COPY extra_model_paths.yaml /comfyui/extra_model_paths.yaml
+
 # No model downloads here: the network volume is mounted at
 # /runpod-volume and the worker maps /runpod-volume/models/* into
 # ComfyUI at startup (qwen-image-2.1-UC-Q6_K.gguf, qwen3vl_8b_int8_convrot,
